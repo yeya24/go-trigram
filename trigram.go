@@ -183,9 +183,9 @@ func (idx Index) Query(s string) []DocID {
 }
 
 // Exists returns whether the document IDs match the trigrams in the query s
-func (idx Index) Exists(s string) []DocID {
+func (idx Index) Exists(s string) bool {
 	ts := Extract(s, nil)
-	return idx.QueryTrigrams(ts)
+	return idx.ExistsTrigrams(ts)
 }
 
 type tfList struct {
