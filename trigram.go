@@ -182,6 +182,12 @@ func (idx Index) Query(s string) []DocID {
 	return idx.QueryTrigrams(ts)
 }
 
+// Exists returns whether the document IDs match the trigrams in the query s
+func (idx Index) Exists(s string) []DocID {
+	ts := Extract(s, nil)
+	return idx.QueryTrigrams(ts)
+}
+
 type tfList struct {
 	tri  []T
 	freq []int
@@ -226,6 +232,22 @@ func (idx Index) QueryTrigrams(ts []T) []DocID {
 	ids := idx.Filter(idx[ts[nonzero]], ts[nonzero+1:])
 
 	return ids
+}
+
+// ExistsTrigrams returns whether document IDs that match the trigram set ts
+func (idx Index) ExistsTrigrams(ts []T) bool {
+
+	if len(ts) == 0 {
+		return true
+	}
+
+	for _, t := range ts {
+		if d, ok := idx[t]; !ok || len(d) == 0 {
+			return false
+		}
+	}
+
+	return true
 }
 
 // FilterOr removes documents that don't contain any of the list of specified trigrams
